@@ -1,68 +1,60 @@
 package com.example.lab5_kotlin
 
-import android.app.AlertDialog
-import android.content.Context
 import android.os.Bundle
-import android.view.LayoutInflater
-import android.view.View
-import android.widget.Button
-import android.widget.TextView
-import android.widget.Toast
+import android.util.Log
+import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowInsetsCompat
+import androidx.viewpager2.widget.ViewPager2
 
 class MainActivity : AppCompatActivity() {
-
-    private val listItems = arrayOf("選項一", "選項二", "選項三")
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        enableEdgeToEdge()
         setContentView(R.layout.activity_main)
-
-        val btnShowDialog = findViewById<Button>(R.id.button)
-        btnShowDialog.setOnClickListener {
-            showDialog()
+        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
+            val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
+            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
+            insets
         }
+        Log.e("MainActivity","onCreate")
+        // 取得 ViewPager2 元件
+        val viewPager2 = findViewById<ViewPager2>(R.id.viewPager2)
+        // 建立 ViewPagerAdapter 並設定給 ViewPager2
+        val adapter = ViewPagerAdapter(supportFragmentManager, this.lifecycle)
+        viewPager2.adapter = adapter
+        // 預先載入鄰近的頁面
+        viewPager2.offscreenPageLimit = 1
     }
 
-    private fun showDialog() {
-        val builder = AlertDialog.Builder(this)
-        builder.setTitle("請選擇功能")
-
-        builder.setNegativeButton("顯示LIST") { _, _ ->
-            showListDialog()
-        }
-
-        builder.setPositiveButton("自定義TOAST") { _, _ ->
-            showCustomToast(this, "客製化的Toast！")
-        }
-
-        builder.setNeutralButton("取消") { _, _ ->
-            Toast.makeText(this, "已取消", Toast.LENGTH_SHORT).show()
-        }
-
-        builder.show()
+    override fun onRestart() {
+        super.onRestart()
+        Log.e("MainActivity", "onRestart")
     }
 
-    private fun showListDialog() {
-        AlertDialog.Builder(this)
-            .setTitle("選擇一個項目")
-            .setItems(listItems) { _, which ->
-                Toast.makeText(this, "你選擇了：${listItems[which]}", Toast.LENGTH_SHORT).show()
-            }
-            .setNegativeButton("關閉", null)
-            .show()
+    override fun onStart() {
+        super.onStart()
+        Log.e("MainActivity", "onStart")
     }
 
-    private fun showCustomToast(context: Context, message: String) {
-        val inflater = LayoutInflater.from(context)
-        val layout: View = inflater.inflate(R.layout.custom_toast, null)
+    override fun onResume() {
+        super.onResume()
+        Log.e("MainActivity", "onResume")
+    }
 
-        val textView: TextView = layout.findViewById(R.id.textView)
-        textView.text = message
+    override fun onPause() {
+        super.onPause()
+        Log.e("MainActivity", "onPause")
+    }
 
-        val toast = Toast(context)
-        toast.duration = Toast.LENGTH_LONG
-        toast.view = layout
-        toast.show()
+    override fun onStop() {
+        super.onStop()
+        Log.e("MainActivity","onStop")
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        Log.e("MainActivity","onDestroy")
     }
 }
